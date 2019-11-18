@@ -18,6 +18,13 @@ afterAll(async done => {
 describe('/api/dishes routes', () => {
   // its up to you to create the test conditions for /api/dishes
   // add as many tests as you feel necessary to fully cover each routes functionality
+  const person1 = { name: 'mark', isAttending: true };
+  const person2 = { name: 'russell', isAttending: false };
+  const person3 = { name: 'ryan', isAttending: true };
+
+  const dish1 = { name: 'turkey', description: 'delicious briney turkey' };
+  const dish2 = { name: 'pie', description: 'delicious pumpkiney pie' };
+  
   describe('GET to /api/dishes', () => {
     it('does a test!', () => {
       fail();

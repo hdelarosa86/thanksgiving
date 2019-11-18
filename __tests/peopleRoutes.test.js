@@ -111,6 +111,29 @@ describe('/api/people routes', () => {
           Dish.create({ ...dish2, personId: ryan.id }),
         ]);
         // your code below
+        const includeDishesResponse = await request(app)
+          .get('/api/people/?include_dishes=true')
+          .expect('Content-Type', /json/)
+          .expect(200);
+
+        const peopleIncludesDish = includeDishesResponse.body;
+        expect(peopleIncludesDish.length).toBe(2);
+
+        expect(peopleIncludesDish).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining(person1),
+            expect.objectContaining(person3),
+          ])
+        );
+
+        const peopleNoDishResponse = await request(app)
+          .get('/api/people/?include_dishes=false')
+          .expect('Content-Type', /json/)
+          .expect(200);
+
+        const noDish = peopleNoDishResponse.body;
+        expect(noDish.length).toBe(1);
+        // expect(noDish).toEqual([expect.objectContaining(person2)]);
       } catch (err) {
         fail(err);
       }
@@ -129,8 +152,47 @@ describe('/api/people routes', () => {
     it('should return a 400 if given an invalid id', async () => {});
   });
 
-  xdescribe('DELETE to /api/people/:id', () => {
-    it('should remove a person from the database', async () => {});
-    it('should return a 400 if given an invalid id', async () => {});
+  describe('DELETE to /api/people/:id', () => {
+    it('should remove a person from the database', async () => {
+      try {
+        const [mark, russell, ryan] = await Promise.all([
+          Person.create(person1),
+          Person.create(person2),
+          Person.create(person3),
+        ]);
+
+        const [turk, pie] = await Promise.all([
+          Dish.create({ ...dish1, personId: mark.id }),
+          Dish.create({ ...dish2, personId: ryan.id }),
+        ]);
+        // your code below
+        const destroyPerson = await request(app)
+          .delete('/api/people/2')
+      } catch (err) {
+        fail(err);
+      }
+      expect(destroyPerson.statusCode).toBe(200);
+      
+    });
+    it('should return a 400 if given an invalid id', async () => {
+      try {
+        const [mark, russell, ryan] = await Promise.all([
+          Person.create(person1),
+          Person.create(person2),
+          Person.create(person3),
+        ]);
+
+        const [turk, pie] = await Promise.all([
+          Dish.create({ ...dish1, personId: mark.id }),
+          Dish.create({ ...dish2, personId: ryan.id }),
+        ]);
+        // your code below
+        const destroyPerson = await request(app)
+          .delete('/api/people/10')
+          .expect(400);
+      } catch (err) {
+        fail(err);
+      }
+    });
   });
 });
